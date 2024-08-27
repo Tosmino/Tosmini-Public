@@ -1,0 +1,15 @@
+{
+    "bot-token":"",
+    "guild-id":"",
+    "mod-id":"",
+    "openAI-key": "",
+    "quote-channel": "",
+    "report-channel": "",
+    "deletion-log-channel": "",
+    "spam-channel": "",
+    "member-leave-channel": "",
+    "welcome-channel": "",
+    "stream-channel": "",
+    "stream-announcement" : "",
+    "role-message-id" : ""
+}
