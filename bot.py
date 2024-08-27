@@ -1,17 +1,21 @@
+# Main file to run the bot. Includes all functionality
+# Look into refactoring if possible.
 from datetime import timedelta
 
+# Import Discord dependencies
 import discord
 from colorama import Fore
 from discord import Spotify, app_commands, utils
 from discord.ext import commands
 
+# Import ChatGPT dependencies
 import log
 import responses
 
 logger = log.setup_logger(__name__)
-
 config = responses.get_config()
 
+# Load id values from 'log.py' into desired variables
 token = config['bot-token']
 guild = config['guild-id']
 mod_id = config['mod-id']
@@ -32,7 +36,7 @@ MY_GUILD = discord.Object(id=guild)
 # MOD_ROLE should be the id value of desired moderator role
 MOD_ROLE = mod_id
 
-
+# Anti Spam Setup
 class MyClient(discord.Client):
     def __init__(self, *, intents: discord.Intents):
         super().__init__(intents=intents)
@@ -53,6 +57,7 @@ class MyClient(discord.Client):
         self.tree.copy_global_to(guild=MY_GUILD)
         await self.tree.sync(guild=MY_GUILD)
 
+#region React Role Setup
     # Listens for when a user reacts to a message
     async def on_raw_reaction_add(self, payload: discord.RawReactionActionEvent):
         """Gives a role based on a reaction emoji."""
@@ -122,7 +127,9 @@ class MyClient(discord.Client):
         except discord.HTTPException:
             # If we want to do something in case of errors we'd do it here.
             pass
+#endregion
 
+#region Message Management
     # Listens for when a message is sent in the guild
     async def on_message(self, message):
         # if message author is a bot then ignore it
@@ -227,8 +234,9 @@ class MyClient(discord.Client):
 
         # Send message to channel
         await channel.send(msg)
+#endregion
 
-
+#region Ticket Setup
 class main(discord.ui.View):
     def __init__(self) -> None:
         super().__init__(timeout=None)
@@ -280,8 +288,9 @@ class confirm(discord.ui.View):
             await interaction.channel.delete()
         except:
             await interaction.response.send_message("Channel deletion failed! Make sure I have `manage_channels` permissions!", ephemeral=True)
+#endregion
 
-
+# I believe this enables the use of these features and alerts server owners
 intents = discord.Intents.default()
 intents.members = True
 intents.message_content = True
@@ -302,8 +311,9 @@ async def on_ready():
     print(Fore.GREEN + 'Bot is live')
     print(Fore.WHITE)
 
+#region Homebrew
 # START HOMEBREW FUNCTIONS
-# ********************************************************
+# *********************************************************************************************************************************************
 
 # Listens for when a users presence (status or activity) change
 @client.event
@@ -313,21 +323,26 @@ async def on_presence_update(before, after):
         if ((str(after.name) == "seoulorbit") and (str(after.status) == "online")):
             await after.send('<3')
 
+    # If the user activity changes to something other than "none" while remaining online
     if ((before.activities != after.activities) and (after.activities != None) and (before.status == after.status)):
         for activity in after.activities:
             if (activity not in before.activities):
+                # Print change to terminal
                 if isinstance(activity, Spotify):
                     print(
                         f"{after.name} is listening to {activity.title} by {activity.artist}")
 
+                # Announce the user is streaming to the streaming channel
                 elif ((str(activity.type) == "ActivityType.streaming") and (("Tosminion" in str(after.roles)) or ("Founder" in str(after.roles)))):
                     channel = client.get_channel(int(stream_channel))
                     await channel.send(f"{after.name} is live on __{activity.platform}__ playing **{activity.game}**! {activity.url}")
 
+                # Tosmino specific announcement. Good starting point for Issue #11
                 elif ((str(activity.type) == "ActivityType.streaming") and (str(after.name) == "Tosmino")):
                     channel = client.get_channel(int(stream_announcement))
                     await channel.send(f"{after.name} is live on __{activity.platform}__ playing **{activity.game}**! {activity.url}")
 
+                # If one of the mods boots League, they get sent a gif in their dms. Funny but can be removed
                 '''
                 elif (str(activity.type) == "ActivityType.playing"):
                     print(f"{after.name} has started playing {activity.name}")
@@ -393,11 +408,13 @@ async def quote(interaction: discord.Interaction, message: discord.Message):
     await quote_location.send(f'{message.content} \n \n -{message.author.mention} {discord.utils.format_dt(message.created_at)}')
 
 
-# ********************************************************
+# *********************************************************************************************************************************************
 # END HOMEBREW FUNCTIONS
+#endregion
 
+#region Ticket System
 # START TICKETING SYSTEM
-# ********************************************************
+# *********************************************************************************************************************************************
 
 # Launches the ticketing system
 @client.tree.command(guild=MY_GUILD, name='ticket', description='Launches the ticketing system')
@@ -442,12 +459,13 @@ async def remove(interaction: discord.Interaction, user: discord.Member):
     else:
         await interaction.response.send_message("This isn't a ticket!", ephemeral=True)
 
-# ********************************************************
+# *********************************************************************************************************************************************
 # END TICKETING SYSTEM
+#endregion
 
-
+#region Reaction Roles
 # START REACTION ROLES
-# ********************************************************
+# *********************************************************************************************************************************************
 
 # Assign a message react roles
 @client.tree.context_menu(name='Set React Role')
@@ -489,12 +507,13 @@ async def remove_bot_reactions(interaction: discord.Interaction, message: discor
     await message.remove_reaction('<:Junimo:1057769569500024914>', discord.utils.get(message.guild.members, name='Tosmini'))
     await interaction.response.send_message(f'Reactions have been removed!', ephemeral=True)
 
-# ********************************************************
+# *********************************************************************************************************************************************
 # END REACTION ROLES
+#endregion
 
-
+#region ChatGPT
 # START CHATGPT INCORPORATION
-# ********************************************************
+# *********************************************************************************************************************************************
 
 async def send_message(message, user_message):
     await message.response.defer(ephemeral=isPrivate)
@@ -620,7 +639,9 @@ async def help(interaction: discord.Interaction):
     logger.info(
         "\x1b[31mSomeone need help!\x1b[0m")
 
-# ********************************************************
+# *********************************************************************************************************************************************
 # END CHATGPT INCORPORATION
+#endregion
 
+# Run the bot
 client.run(token)

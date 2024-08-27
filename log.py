@@ -1,7 +1,7 @@
+# This file is used in conjunction with ChatGPT to keep conversation logs persistent
 import os
 import logging
 import logging.handlers
-
 
 class CustomFormatter(logging.Formatter):
 
