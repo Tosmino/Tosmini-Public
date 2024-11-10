@@ -136,8 +136,8 @@ class MyClient(discord.Client):
         if message.author.id == self.user.id:
             return
 
-        # Print messages and authors to console
-        print(f'Received a message from {message.author}: {message.content}')
+        # Print messages and authors to console REMOVED TEMPORARILY
+        # print(f'Received a message from {message.author}: {message.content}')
 
         # If a message begins with 'Hello', bot responds hello
         if message.content.startswith('Hello') or message.content.startswith('hello'):
@@ -308,7 +308,7 @@ async def on_ready():
 
     print(f'Logged in as {client.user} (ID: {client.user.id})')
     print('------')
-    print(Fore.GREEN + 'Bot is live')
+    print(Fore.GREEN + 'Bot is live :\)')
     print(Fore.WHITE)
 
 #region Homebrew
@@ -319,7 +319,7 @@ async def on_ready():
 @client.event
 async def on_presence_update(before, after):
     if (before.status != after.status):
-        print(f"{after.name} is {after.status}")
+        # print(f"{after.name} is {after.status}")
         if ((str(after.name) == "seoulorbit") and (str(after.status) == "online")):
             await after.send('<3')
 
@@ -328,12 +328,14 @@ async def on_presence_update(before, after):
         for activity in after.activities:
             if (activity not in before.activities):
                 # Print change to terminal
+                '''
                 if isinstance(activity, Spotify):
                     print(
                         f"{after.name} is listening to {activity.title} by {activity.artist}")
+                '''
 
                 # Announce the user is streaming to the streaming channel
-                elif ((str(activity.type) == "ActivityType.streaming") and (("Tosminion" in str(after.roles)) or ("Founder" in str(after.roles)))):
+                if ((str(activity.type) == "ActivityType.streaming") and (("Tosminion" in str(after.roles)) or ("Founder" in str(after.roles)))):
                     channel = client.get_channel(int(stream_channel))
                     await channel.send(f"{after.name} is live on __{activity.platform}__ playing **{activity.game}**! {activity.url}")
 
