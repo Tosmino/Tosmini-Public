@@ -1,19 +1,54 @@
 import json
+import os
 import openai
 from asgiref.sync import sync_to_async
 
 
+def get_config_path() -> str:
+    config_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(config_dir, 'config.json')
+
 def get_config() -> dict:
-    import os
-    # get config.json path
-    config_dir = os.path.abspath(__file__ + "/../")
-    config_name = 'config.json'
-    config_path = os.path.join(config_dir, config_name)
+    try:
+        config_path = get_config_path()
+        with open(config_path, 'r') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        print("Error: config.json file not found.")
+        return {}
+    except json.JSONDecodeError:
+        print("Error: Failed to decode JSON from config.json.")
+        return {}
 
-    with open(config_path, 'r') as f:
-        config = json.load(f)
+# Update an aspect of JSON file (str) to a new value (value)
+def update_config(key: str, value) -> None:
+    try:
+        config_path = get_config_path()
 
-    return config
+        # Load the current config data
+        with open(config_path, 'r') as f:
+            config = json.load(f)
+
+        # Update the specified key with the new value
+        config[key] = value
+
+        # Save the updated config back to the JSON file
+        with open(config_path, 'w') as f:
+            json.dump(config, f, indent=4)
+
+        print(f"Updated '{key}' in config.json.")
+
+    except FileNotFoundError:
+        print("Error: config.json file not found.")
+    except json.JSONDecodeError:
+        print("Error: Failed to decode JSON from config.json.")
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+
+# Async wrapper for update_config
+@sync_to_async
+def async_update_config(key: str, value) -> None:
+    update_config(key, value)
 
 config = get_config()
 openai.api_key = config['openAI-key']

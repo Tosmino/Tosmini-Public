@@ -308,7 +308,7 @@ async def on_ready():
 
     print(f'Logged in as {client.user} (ID: {client.user.id})')
     print('------')
-    print(Fore.GREEN + 'Bot is live :\)')
+    print(Fore.GREEN + 'Bot is live :)')
     print(Fore.WHITE)
 
 #region Homebrew
@@ -473,7 +473,7 @@ async def remove(interaction: discord.Interaction, user: discord.Member):
 @client.tree.context_menu(name='Set React Role')
 async def assign_react_role(interaction: discord.Interaction, message: discord.Message):
     # ID of the message that can be reacted to to add/remove a role.
-    config['role-message-id'] = message.id
+    responses.update_config('role-message-id', message.id)
     client.role_message_id = message.id
     client.emoji_to_role = {
         discord.PartialEmoji(name='Minecraft', id=1038647794245836870): 1038649520763973692,
