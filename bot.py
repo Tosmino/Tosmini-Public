@@ -473,6 +473,7 @@ async def remove(interaction: discord.Interaction, user: discord.Member):
 @client.tree.context_menu(name='Set React Role')
 async def assign_react_role(interaction: discord.Interaction, message: discord.Message):
     # ID of the message that can be reacted to to add/remove a role.
+    print(f"Changing message id from {client.role_message_id} to {message.id}")
     responses.update_config('role-message-id', message.id)
     client.role_message_id = message.id
     client.emoji_to_role = {
