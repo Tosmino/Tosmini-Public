@@ -480,7 +480,7 @@ async def assign_react_role(interaction: discord.Interaction, message: discord.M
         discord.PartialEmoji(name='Minecraft', id=1038647794245836870): 1038649520763973692,
         discord.PartialEmoji(name='League', id=1038647793113383002): 1038649252617912400,
         discord.PartialEmoji(name='Overwatch', id=1038647795386683533): 1038648972618772561,
-        discord.PartialEmoji(name='Valorant', id=1057721905156718782): 1057725308851200020,
+        discord.PartialEmoji(name='Valorant', id=1057721657181098024): 1057725308851200020,
         discord.PartialEmoji(name='Hunt', id=1057769568359153704): 1057767445013729293,
         discord.PartialEmoji(name='Junimo', id=1057769569500024914): 1057767836065464482,
         discord.PartialEmoji(name='Twitch', id=1346573864930644110): 1346569941377220658,
