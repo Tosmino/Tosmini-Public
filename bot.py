@@ -126,7 +126,6 @@ class MyClient(discord.Client):
             await member.remove_roles(role)
         except discord.HTTPException:
             # If we want to do something in case of errors we'd do it here.
-            f'Failed to remove role, please contact a moderator to assist you!', ephemeral=True
             pass
 #endregion
 
@@ -485,7 +484,7 @@ async def assign_react_role(interaction: discord.Interaction, message: discord.M
         discord.PartialEmoji(name='Hunt', id=1057769568359153704): 1057767445013729293,
         discord.PartialEmoji(name='Junimo', id=1057769569500024914): 1057767836065464482,
         discord.PartialEmoji(name='Twitch', id=1346573864930644110): 1346569941377220658,
-        discord.PartialEmoji(name='Youtube', id=1346573890796916798): 1346570024860782763,
+        discord.PartialEmoji(name='YouTube', id=1346573890796916798): 1346570024860782763,
 
     }
 
