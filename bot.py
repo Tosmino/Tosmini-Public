@@ -484,8 +484,6 @@ async def assign_react_role(interaction: discord.Interaction, message: discord.M
         discord.PartialEmoji(name='Valorant', id=1057721905156718782): 1057725308851200020,
         discord.PartialEmoji(name='Hunt', id=1057769568359153704): 1057767445013729293,
         discord.PartialEmoji(name='Junimo', id=1057769569500024914): 1057767836065464482,
-        discord.PartialEmoji(name='Twitch', id=1346573864930644110): 1346569941377220658,
-        discord.PartialEmoji(name='Youtube', id=1346573890796916798): 1346570024860782763,
 
     }
 
@@ -500,8 +498,6 @@ async def react_role_react(interaction: discord.Interaction, message: discord.Me
     await message.add_reaction('<:Valorant:1057721657181098024>')
     await message.add_reaction('<:Hunt:1057769568359153704>')
     await message.add_reaction('<:Junimo:1057769569500024914>')
-    await message.add_reaction('<:Twitch:1346573864930644110>')
-    await message.add_reaction('<:YouTube:1346573890796916798>')
     await interaction.response.send_message(f'Reactions have been added!', ephemeral=True)
 
 # Remove bot reactions to a message
@@ -513,8 +509,6 @@ async def remove_bot_reactions(interaction: discord.Interaction, message: discor
     await message.remove_reaction('<:Valorant:1057721657181098024>', discord.utils.get(message.guild.members, name='Tosmini'))
     await message.remove_reaction('<:Hunt:1057769568359153704>', discord.utils.get(message.guild.members, name='Tosmini'))
     await message.remove_reaction('<:Junimo:1057769569500024914>', discord.utils.get(message.guild.members, name='Tosmini'))
-    await message.remove_reaction('<:Twitch:1346573864930644110>', discord.utils.get(message.guild.members, name='Tosmini'))
-    await message.remove_reaction('<:YouTube:1346573890796916798>', discord.utils.get(message.guild.members, name='Tosmini'))
     await interaction.response.send_message(f'Reactions have been removed!', ephemeral=True)
 
 # *********************************************************************************************************************************************
