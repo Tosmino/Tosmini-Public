@@ -27,6 +27,7 @@ spam_channel = config['spam-channel']
 member_leave_channel = config['member-leave-channel']
 welcome_channel = config['welcome-channel']
 stream_announcement = config['stream-announcement']
+role_message_id = config['role-message-id']
 
 isPrivate = False
 
@@ -50,7 +51,18 @@ class MyClient(discord.Client):
         self.synced = False
         self.added = False
         self.mod_role = MOD_ROLE
-        self.role_message_id = config['role-message-id']
+        self.role_message_id = role_message_id
+        
+        self.emoji_to_role = {
+        discord.PartialEmoji(name='Minecraft', id=1038647794245836870): 1038649520763973692,
+        discord.PartialEmoji(name='League', id=1038647793113383002): 1038649252617912400,
+        discord.PartialEmoji(name='Overwatch', id=1038647795386683533): 1038648972618772561,
+        discord.PartialEmoji(name='Valorant', id=1057721657181098024): 1057725308851200020,
+        discord.PartialEmoji(name='Hunt', id=1057769568359153704): 1057767445013729293,
+        discord.PartialEmoji(name='Junimo', id=1057769569500024914): 1057767836065464482,
+        discord.PartialEmoji(name='Twitch', id=1346573864930644110): 1346569941377220658,
+        discord.PartialEmoji(name='YouTube', id=1346573890796916798): 1346570024860782763,
+    }
 
     async def setup_hook(self):
         # This copies the global commands over to your guild.
@@ -149,11 +161,11 @@ class MyClient(discord.Client):
             await message.reply('Sleep well gamer!', mention_author=True)
 
         # If message is 'ping' hit em with a 'pong'
-        if message.content == "ping":
+        if (message.content == "ping" or message.content == "Pong"):
             await message.channel.send('pong')
 
         # If message is 'pong' schlap em with da 'ping'
-        if message.content == "pong":
+        if (message.content == "pong" or message.content == "Pong"):
             await message.channel.send('ping')
 
         # If message contains any instance of 'rickroll', responds with link to "Never gonna give you up"
@@ -310,6 +322,9 @@ async def on_ready():
     print('------')
     print(Fore.GREEN + 'Bot is live :)')
     print(Fore.WHITE)
+    
+    # Initialize react role id
+    client.role_message_id = role_message_id
 
 #region Homebrew
 # START HOMEBREW FUNCTIONS
@@ -327,22 +342,23 @@ async def on_presence_update(before, after):
     if ((before.activities != after.activities) and (after.activities != None) and (before.status == after.status)):
         for activity in after.activities:
             if (activity not in before.activities):
+                
                 # Print change to terminal
                 '''
-                if isinstance(activity, Spotify):
-                    print(
-                        f"{after.name} is listening to {activity.title} by {activity.artist}")
+                 if isinstance(activity, Spotify):
+                     print(
+                         f"{after.name} is listening to {activity.title} by {activity.artist}")
                 '''
 
                 # Announce the user is streaming to the streaming channel
                 if ((str(activity.type) == "ActivityType.streaming") and (("Tosminion" in str(after.roles)) or ("Founder" in str(after.roles)))):
                     channel = client.get_channel(int(stream_channel))
-                    await channel.send(f"{after.name} is live on __{activity.platform}__ playing **{activity.game}**! {activity.url}")
+                    await channel.send(f"{after.name} is live on __{activity.platform}__ playing [{activity.game}!]\({activity.url}\)")
 
                 # Tosmino specific announcement. Good starting point for Issue #11
                 elif ((str(activity.type) == "ActivityType.streaming") and (str(after.name) == "Tosmino")):
                     channel = client.get_channel(int(stream_announcement))
-                    await channel.send(f"{after.name} is live on __{activity.platform}__ playing **{activity.game}**! {activity.url}")
+                    await channel.send(f"{after.name} is live on __{activity.platform}__ playing [{activity.game}!]\({activity.url}\)")
 
                 # If one of the mods boots League, they get sent a gif in their dms. Funny but can be removed
                 '''
